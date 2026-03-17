@@ -1,10 +1,7 @@
 import React from "react";
 import { Movies, MoviesSearch, FilmData, Preloader } from "../components";
 
-
 const API_KEY = process.env.REACT_APP_API_KEY;
-const SCHEMA = process.env.REACT_APP_SCHEMA;
-const DOMAIN = process.env.REACT_APP_PATH_DOMAIN;
 
 enum SearchType {
   all = "",
@@ -35,7 +32,7 @@ export class Main extends React.Component<MainProps, MainState> {
   ) {
     this.setState({ loading: true });
     const myNewRequest = new Request(
-      `${SCHEMA}://${DOMAIN}/?apikey=${API_KEY}&s=${searchName}&type=${searchType}`,
+      `https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchName}&type=${searchType}`,
     );
 
     await fetch(myNewRequest)
@@ -44,7 +41,10 @@ export class Main extends React.Component<MainProps, MainState> {
         this.setState({ movies: responseJSON.Search });
         this.setState({ loading: false });
       })
-      .catch(console.error);
+      .catch((err) => {
+        console.error(err);
+        this.setState({ loading: false });
+      });
   }
 
   render() {
