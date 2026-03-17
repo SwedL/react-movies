@@ -1,5 +1,5 @@
-import React from "react";
-import { Movies, MoviesSearch, FilmData, Preloader } from "../components";
+import React, { useState } from "react";
+import { Movies, MoviesSearch, Preloader } from "../components";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -9,28 +9,15 @@ enum SearchType {
   series = "series",
 }
 
-interface MainProps {}
+function Main() {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-interface MainState {
-  movies: Array<FilmData>;
-  loading: boolean;
-}
-
-export class Main extends React.Component<MainProps, MainState> {
-  constructor(props: MainProps) {
-    super(props);
-    this.state = {
-      movies: [],
-      loading: false,
-    };
-    this.handleSearch = this.handleSearch.bind(this);
-  }
-
-  async handleSearch(
+  const handleSearch = async (
     searchName: string,
     searchType: SearchType = SearchType.all,
-  ) {
-    this.setState({ loading: true });
+  ) => {
+    setLoading(true);
     const myNewRequest = new Request(
       `https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchName}&type=${searchType}`,
     );
@@ -38,23 +25,22 @@ export class Main extends React.Component<MainProps, MainState> {
     await fetch(myNewRequest)
       .then((response) => response.json())
       .then((responseJSON) => {
-        this.setState({ movies: responseJSON.Search });
-        this.setState({ loading: false });
+        console.log(responseJSON);
+        "Error" in responseJSON ? setMovies([]) : setMovies(responseJSON.Search);
+        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        this.setState({ loading: false });
+        setLoading(false);
       });
-  }
+  };
 
-  render() {
-    const { movies, loading } = this.state;
-
-    return (
-      <main className="container content">
-        <MoviesSearch handleSearch={this.handleSearch} />
-        {loading ? <Preloader /> : <Movies movies={movies} />}
-      </main>
-    );
-  }
+  return (
+    <main className="container content">
+      <MoviesSearch handleSearch={handleSearch} />
+      {loading ? <Preloader /> : <Movies movies={movies} />}
+    </main>
+  );
 }
+
+export { Main };
