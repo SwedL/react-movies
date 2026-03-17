@@ -26,7 +26,9 @@ function Main() {
       .then((response) => response.json())
       .then((responseJSON) => {
         console.log(responseJSON);
-        "Error" in responseJSON ? setMovies([]) : setMovies(responseJSON.Search);
+        "Error" in responseJSON
+          ? setMovies([])
+          : setMovies(responseJSON.Search);
         setLoading(false);
       })
       .catch((err) => {
@@ -38,7 +40,11 @@ function Main() {
   return (
     <main className="container content">
       <MoviesSearch handleSearch={handleSearch} />
-      {loading ? <Preloader /> : <Movies movies={movies} />}
+      {loading || !(movies instanceof Array) ? (
+        <Preloader />
+      ) : (
+        <Movies movies={movies} />
+      )}
     </main>
   );
 }

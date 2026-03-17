@@ -10,10 +10,17 @@ interface MoviesSearchProps {
   handleSearch: CallableFunction;
 }
 
-function MoviesSearch (props: MoviesSearchProps) {
+function MoviesSearch(props: MoviesSearchProps) {
   const [searchType, setSearchType] = useState(SearchType.all);
   const [search, setSearch] = useState("");
   // const searchRef = useRef<HTMLInputElement>(null); # либо через useRef: в input -> ref={searchRef}
+
+  const handleRadio = (searchType: SearchType) => {
+    setSearchType(searchType);
+    if (search) {
+      props.handleSearch(search.trim(), searchType);
+    }
+  };
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,7 +50,7 @@ function MoviesSearch (props: MoviesSearchProps) {
             type="radio"
             name="searchType"
             data-type={SearchType.all}
-            onChange={() => setSearchType(SearchType.all)}
+            onChange={() => handleRadio(SearchType.all)}
             checked={searchType === SearchType.all}
           />
           <span>All</span>
@@ -54,7 +61,7 @@ function MoviesSearch (props: MoviesSearchProps) {
             type="radio"
             name="searchType"
             data-type={SearchType.movie}
-            onChange={() => setSearchType(SearchType.movie)}
+            onChange={() => handleRadio(SearchType.movie)}
             checked={searchType === SearchType.movie}
           />
           <span>Movies</span>
@@ -65,7 +72,7 @@ function MoviesSearch (props: MoviesSearchProps) {
             type="radio"
             name="searchType"
             data-type={SearchType.series}
-            onChange={() => setSearchType(SearchType.series)}
+            onChange={() => handleRadio(SearchType.series)}
             checked={searchType === SearchType.series}
           />
           <span>Series</span>
@@ -73,6 +80,6 @@ function MoviesSearch (props: MoviesSearchProps) {
       </div>
     </form>
   );
-};
+}
 
 export { MoviesSearch };

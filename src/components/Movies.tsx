@@ -1,7 +1,7 @@
 import { Movie, FilmData } from ".";
 
 interface MoviesProps {
-  movies: Array<FilmData>;
+  movies: Array<FilmData> | [];
 }
 
 export function Movies(props: MoviesProps) {
